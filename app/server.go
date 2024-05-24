@@ -36,17 +36,18 @@ func handleClient(conn net.Conn) {
 	defer conn.Close()
 
 	buf := make([]byte, 1024)
-	n, err := conn.Read(buf)
-	if err != nil {
-		return
-	}
 
-	fmt.Println("Received data", string(buf[:n]))
+	for {
+		n, err := conn.Read(buf)
+		if err != nil {
+			return
+		}
 
-	commands := strings.Fields(string(buf[:n]))
+		resp := string(buf[:n])
 
-	for _, command := range commands {
-		if strings.Contains(command, "PING") {
+		fmt.Println("Received data", resp)
+
+		if strings.Contains(resp, "PING") {
 			conn.Write([]byte("+PONG\r\n"))
 		}
 	}
