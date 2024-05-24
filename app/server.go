@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"sync"
 )
 
 func main() {
@@ -19,6 +20,8 @@ func main() {
 
 	fmt.Println("Listening for connections")
 
+	wg := new(sync.WaitGroup)
+
 	for {
 		conn, err := listener.Accept()
 		fmt.Println("Connection made")
@@ -28,11 +31,13 @@ func main() {
 			os.Exit(1)
 		}
 
-		handleClient(conn)
+		wg.Add(1)
+		go handleClient(conn, wg)
 	}
 }
 
-func handleClient(conn net.Conn) {
+func handleClient(conn net.Conn, wg *sync.WaitGroup) {
+	defer wg.Done()
 	defer conn.Close()
 
 	buf := make([]byte, 1024)
