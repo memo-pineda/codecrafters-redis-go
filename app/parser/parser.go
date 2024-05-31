@@ -11,7 +11,7 @@ func ParseBytes(bytes []byte, size int) (*[]string, error) {
 
 	fmt.Println("Received data", resp)
 
-	parts := strings.Split(resp, "\r\n")
+	parts := strings.Split(resp, `\r\n`)
 
 	arrayDetails := parts[0]
 
