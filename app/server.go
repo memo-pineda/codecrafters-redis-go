@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"sync"
+
+	redisparser "github.com/codecrafters-io/redis-starter-go/app/parser"
 )
 
 func main() {
@@ -48,12 +50,27 @@ func handleClient(conn net.Conn, wg *sync.WaitGroup) {
 			return
 		}
 
-		resp := string(buf[:n])
+		// Parse the string command into an array
+		resp, err := redisparser.ParseBytes(buf, n)
 
-		fmt.Println("Received data", resp)
+		if err != nil {
+			return
+		}
 
-		if strings.Contains(resp, "PING") {
+		// We get a pointer to an array from ParseBytes, this will
+		// just deference it for easier array indexing
+		respArray := *resp
+
+		command := strings.ToUpper(respArray[0])
+
+		if strings.Contains(command, "PING") {
 			conn.Write([]byte("+PONG\r\n"))
+		} else if strings.Contains(command, "ECHO") {
+			if len(respArray) < 2 {
+				conn.Write([]byte("Missing 1 argument"))
+			} else {
+				conn.Write([]byte(respArray[1]))
+			}
 		}
 	}
 }
