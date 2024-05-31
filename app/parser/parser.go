@@ -13,6 +13,8 @@ func ParseBytes(bytes []byte, size int) (*[]string, error) {
 
 	parts := strings.Split(resp, `\r\n`)
 
+	fmt.Printf("parsing out parts of string %v", parts)
+
 	arrayDetails := parts[0]
 
 	if arrayDetails[0] == '*' {
