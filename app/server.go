@@ -61,6 +61,8 @@ func handleClient(conn net.Conn, wg *sync.WaitGroup) {
 		// just deference it for easier array indexing
 		respArray := *resp
 
+		fmt.Printf("parsing result as %v", respArray)
+
 		command := strings.ToUpper(respArray[0])
 
 		if strings.Contains(command, "PING") {
