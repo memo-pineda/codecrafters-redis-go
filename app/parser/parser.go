@@ -32,6 +32,8 @@ func ParseBytes(bytes []byte, size int) (*[]string, error) {
 			idx += 2
 		}
 
+		fmt.Printf("Returning command as %v", command)
+
 		return &command, nil
 	}
 
